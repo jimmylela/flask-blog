@@ -12,9 +12,9 @@ with sqlite3.connect("blog.db") as blog_db_connection:
     blog_db_cursor = blog_db_connection.cursor()
 
     ## create posts table
-    blog.db_cursor.execute("""
+    blog_db_cursor.execute("""
         CREATE table posts (title TEXT, post TEXT)
-    """
+    """)
 
     ## Insert default data into posts table
     blog_db_cursor.execute('INSERT INTO posts VALUES("Good", "I\'m good.")')

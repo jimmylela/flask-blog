@@ -9,8 +9,12 @@ from flask import Flask, render_template, request, session, flash, redirect, url
 ## import sqlite3 module
 import sqlite3
 
-## save database name to variable
+## define configuration variables
 DATABASE = 'blog.db'
+USERNAME = 'admin'
+PASSWORD = 'admin'
+SECRET_KEY = 'hard_to_guess'
+
 
 ## instantiate a Flask class object, pass it the __name_variable, which 
 ## will have the value of this Python file (blog.py), telling Flask
@@ -25,6 +29,33 @@ app.config.from_object(__name__)
 def connect_db():
     return sqlite3.connect(app.config['DATABASE'])
 
+## login function
+@app.route('/', methods=['GET', 'POST'])
+def login():
+
+    error = None
+    status_code = 200
+
+    if request.method == 'POST':
+
+        if request.form['username'] != app.config['USERNAME'] or \
+                request.form['password'] != app.config['PASSWORD']:
+            error = 'Invalid credentials. Please try again.'
+            status_code = 401
+
+        else:
+
+            session['logged_in'] = True
+
+            return redirect(url_for('main'))
+
+    return render_template('login.html')
+
+## main page function
+@app.route('/main')
+def main():
+    return render_template('main.html')
+
 ## run if not imported from another instance and enable debug mode
-if __name == '__main__':
+if __name__ == '__main__':
     app.run(debug=True)
